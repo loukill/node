@@ -9,6 +9,10 @@ const categorySchema = new Schema (
             required: true,
             unique: true,
             maxlength: 50
+        },
+        image : {
+            type: String,
+            required: true
         }
     },
     {

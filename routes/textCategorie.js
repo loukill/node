@@ -1,5 +1,5 @@
 import  express  from "express";
-import { getAll, addOnce, gettxtCategory, putOnce } from "../controllers/textCategorie.js";
+import { getAll, addOnce, getTxtCategory, putOnce, deleteTxtCategory } from "../controllers/textCategorie.js";
 import { body } from "express-validator";
 
 const router = express.Router();
@@ -7,15 +7,16 @@ const router = express.Router();
 router.route("/")
 .get(getAll)
 .post(
-    body('title').isLength({min: 5}),
+    body('title').isLength({min: 1}),
     addOnce
 );
 
 router.route("/:id")
-.get(gettxtCategory)
+.get(getTxtCategory)
 .put(
-    body('title').isLength({min: 5}),
-    putOnce
-);
+    body('title').isLength({min: 1}),
+    putOnce,
+)
+.delete(deleteTxtCategory)
 
 export default router;

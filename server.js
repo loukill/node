@@ -23,16 +23,18 @@ mongoose.connect(`mongodb://localhost:27017/${databaseName}`)
     console.log(err)
 })
 
+app.use(morgan("dev"))
+app.use(express.json())
+app.use(express.urlencoded({extended: true}))
+app.use(cors())
+app.use('/img', express.static('public/images'));
 
 app.use('/category', categoryRoute);
 app.use('/txtCategory', txtCategoryRoute);
 app.use('/text', textRoute)
 app.use('/api/jeu', jeuRoutes);
 
-app.use(morgan("dev"))
-app.use(express.json())
-app.use(express.urlencoded({extended: true}))
-app.use(cors())
+
 
 
 app.listen(port, () => {

@@ -3,22 +3,24 @@ import { validationResult } from "express-validator";
 
 
 export function getAll(req, res) {
-    txtCategory.find({}).then((docs) => {
-      let list = [];
-      for (let i = 0; i < CtxtCategory.length; i++) {
-        list.push({
-          id: docs[i]._id,
-          title: docs[i].title,
-        });
-      }
-      res.status(200).json(list);
-    })
-    .catch((err) => {
-      res.status(500).json({ error: err })
-    })
-  }
+  txtCategory.find({}).then((docs) => {
+    let list = [];
+    for (let i = 0; i < docs.length; i++) {
+      list.push({
+        id: docs[i]._id,
+        title: docs[i].title,
+      });
+    }
+    res.status(200).json(list);
+  })
+  .catch((err) => {
+    console.error("Error fetching categories:", err);
+    res.status(500).json({ error: err })
+  })
+}
 
-export function gettxtCategory(req,res) {
+
+export function getTxtCategory(req,res) {
     txtCategory.findById(req.params.id)
     .then(doc => {
         res.status(200).json(doc)
@@ -61,3 +63,24 @@ export function putOnce(req, res) {
         res.status(500).json({ error: err });
       });
 }
+
+export async function deleteTxtCategory(req, res) {
+  const id = req.params.id;
+  console.log("Requested to delete category with ID:", id);
+
+  try {
+    const deletedTxtCategory = await txtCategory.findByIdAndDelete(id);
+    if (!deletedTxtCategory) {
+      console.log("No category found with ID:", id);
+      return res.status(404).json({ error: "Text category not found." });
+    }
+    console.log("Category deleted:", deletedTxtCategory);
+    res.json({ message: "Text category successfully deleted." });
+  } catch (error) {
+    console.error("Error in deleting category:", error);
+    res.status(500).json({ error: error.message });
+  }
+}
+
+
+
