@@ -4,7 +4,7 @@ import morgan from 'morgan';
 import cors from 'cors';
 import userRoutes from './routes/user.js';
 import { notFoundError, errorHandler } from './middlewares/error-handler.js';
-import authController from './controllers/authController.js';
+
 
 const app = express();
 const port = process.env.PORT || 9090;
@@ -32,7 +32,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/img', express.static('public/images'));
 app.use('/user', userRoutes);
-app.use('/auth', authController);
+
 app.use(notFoundError);
 app.use(errorHandler);
 

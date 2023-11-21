@@ -1,53 +1,17 @@
-import mongoose from 'mongoose';
-const { Schema, model } = mongoose;
+import mongoose from 'mongoose'; // Importer Mongoose
+const { Schema, model } = mongoose; // Utiliser Schema et model du module mongoose
+const userSchema = new mongoose.Schema({
+    name: { type: String, required: true },
+    lastName : { type: String, required: true },
+    email: { type: String, required: false },
+    password: { type: String, required: true },
+    numTel: { type: Number, required: true ,unique:true },
+    location: { type: String, required: false },
+    
+    picture: { type: String, required : false },
+    role: { type: String, enum: ['Doctor', 'Utilisateur', 'AdminSup'], required: true },   
+  });
 
-const userSchema = new Schema(
-    {
-        email: {
-            type: String,
-            required: true
-        },
-        password: {
-            type: String,
-            required: true
-        },
-        nom: {
-            type: String
-        },
-        prenom: {
-            type: String
-        },
-        dateNaissance: {
-            type: Date
-        },
-        adress: {
-            type: String
-        },
-        cin: {
-            type: String
-        },
-        userName: {
-            type: String
-        },
-        lastPassword: {
-            type: String
-        },
-        isValid: {
-            type: Boolean,
-            default: true
-        },
-        imageRes: {
-            type: String
-        },
-        role: {
-            type: String,
-            enum: ['admin', 'user'],
-            default: 'user'
-        }
-    },
-    {
-        timestamps: true
-    }
-);
+  const User = mongoose.model('User', userSchema);
+export default model("user",userSchema);
 
-export default model('User', userSchema);
