@@ -13,7 +13,7 @@ const textCategorySchema = new Schema (
     },
     {
         timestamps: true,
-    }    
-)
+    },    
+    { collection: 'textcategories' })
 
 export default model('TextCategory', textCategorySchema);

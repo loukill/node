@@ -81,6 +81,3 @@ export async function deleteTxtCategory(req, res) {
     res.status(500).json({ error: error.message });
   }
 }
-
-
-
