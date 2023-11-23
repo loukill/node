@@ -5,9 +5,9 @@ const { Schema, model } = mongoose;
 const texteSchema = new Schema({
     contenu: String,
     dateCreation: { type: Date, default: Date.now },
-    CategoryId: {
+    txtCategoryId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'TextCategory' 
+        ref: 'TextCategory' // Assurez-vous que cela correspond au nom de votre modèle de catégorie de texte
     }
 });
 

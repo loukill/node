@@ -20,6 +20,7 @@ export function getAll(req, res) {
 }
 
 
+
 export function getTxtCategory(req,res) {
     txtCategory.findById(req.params.id)
     .then(doc => {

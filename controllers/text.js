@@ -1,5 +1,5 @@
 import Texte from "../models/text.js"
-import textCategorie from "../models/textCategorie.js";
+import textCategorie from "../models/textCategorie.js"
 import mongoose from 'mongoose';
 
 class textController {
@@ -8,19 +8,18 @@ class textController {
     async creerTexte(req, res) {
         try {
             const { contenu, txtCategoryId } = req.body;
-            
-
-            // Vérifiez si categoryId est fourni
-            if (!txtCategoryId) {
-                return res.status(400).json({ message: "txtCategoryId is required." });
+    
+            // Vérifiez si l'ID de la catégorie de texte est fourni et est valide
+            if (!txtCategoryId || !mongoose.Types.ObjectId.isValid(txtCategoryId)) {
+                return res.status(400).json({ erreur: "ID de catégorie de texte invalide ou manquant." });
             }
-
-            // Vérifiez si la catégorie existe
+    
+            // Vérifiez si la catégorie de texte existe
             const categoryExists = await textCategorie.findById(txtCategoryId);
             if (!categoryExists) {
-                return res.status(404).json({ message: "Category not found." });
+                return res.status(404).json({ erreur: "Catégorie de texte introuvable." });
             }
-
+    
             const nouveauTexte = new Texte({ contenu, txtCategoryId });
             const texteEnregistre = await nouveauTexte.save();
             res.status(201).json(texteEnregistre);
@@ -28,48 +27,26 @@ class textController {
             res.status(400).json({ erreur: erreur.message });
         }
     }
-
-
-    async getTextByCategoryAndId(req, res) {
-        try {
-            const { CategoryId, textId } = req.params;
-            
-            console.log(`Searching for Text with ID: ${textId} and Category ID: ${CategoryId}`);
-
-            
-            const text = await Texte.findOne({ 
-                _id: new mongoose.Types.ObjectId(textId), 
-                txtCategoryId: new mongoose.Types.ObjectId(CategoryId) 
-            });
-    
-            console.log(`Query result: `, text);
-    
-            if (!text) {
-                return res.status(404).json({ message: "Text not found in the specified category." });
-            }
-    
-            res.json(text);
-        } catch (erreur) {
-            console.error(`Error in getTextByCategoryAndId: `, erreur);
-            res.status(500).json({ erreur: erreur.message });
-        }
-    }
-    
-
     
     
 
     async lireTexte(req, res) {
         try {
-            const texte = await Texte.findById(req.params.id).populate('txtCategoryId');
+            const categoryId = req.params.id;
+            if (!mongoose.Types.ObjectId.isValid(categoryId)) {
+                return res.status(400).json({ erreur: "ID de catégorie invalide." });
+            }
+    
+            const texte = await Texte.findOne({ txtCategoryId: categoryId });
             if (!texte) {
-                return res.status(404).json({ erreur: "Texte introuvable." });
+                return res.status(404).json({ erreur: "Texte introuvable pour cette catégorie." });
             }
             res.json(texte);
         } catch (erreur) {
             res.status(500).json({ erreur: erreur.message });
         }
     }
+    
 
     async mettreAJourTexte(req, res) {
         try {

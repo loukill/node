@@ -9,7 +9,7 @@ const textCategorySchema = new Schema (
             required: true,
             unique: true,
             maxlength: 50
-        }
+        },
     },
     {
         timestamps: true,
