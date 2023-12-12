@@ -1,5 +1,6 @@
 // controllers/forumController.js
 import Forum from "../models/Forum.js";
+import{validationResult} from "express-validator";
 
 // Fonction pour récupérer tous les forums
 export const getAllForums = async (req, res) => {
@@ -12,17 +13,49 @@ export const getAllForums = async (req, res) => {
 };
 
 // Fonction pour créer un nouveau forum
-export const createForum = async (req, res) => {
-  const { title, description, image } = req.body;
+export const addOnce = async (req, res) => {
+  if (!validationResult(req).isEmpty()) {
+    return res.status(400).json({ errors: validationResult(req).array() });
+  }
+
+  const { title, description } = req.body;
 
   try {
-    const newForum = new Forum({ title, description, image });
+    const newForum = new Forum({
+      title: title,
+      description: description,
+      image: req.file.filename, // Assuming you want to store the image in the database as a buffer
+    });
+
     const savedForum = await newForum.save();
     res.status(201).json(savedForum);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
+// export function addOnce(req, res) {
+
+//   console.log(req.body);
+//   console.log(req.file);
+//   if (!validationResult(req).isEmpty()) {
+//       console.log({ errors: validationResult(req).array() })
+//       return res.status(400).json({ errors: validationResult(req).array() });
+//   } else {
+//       Forum.create({
+//         title : req.body.title,
+//      description: req.body.description,
+//      image: req.file.filename
+//       })
+//           .then((newEvent) => res.status(201).json("OK"))
+//           .catch((err) => {
+//               res.status(500).json({ error: err.message });
+//           });
+//   }
+
+// }
+
+
+
 
 // Fonction pour récupérer un forum par son ID
 export const getForumById = async (req, res) => {
