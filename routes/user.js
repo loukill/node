@@ -1,39 +1,61 @@
-import express from "express";
-import { body } from "express-validator";
-
-import {
-  getAllUsers,
-  addUser,
-  getUserById,
-  updateUserById,
-  deleteUserById,
-} from "../controllers/user.js"; // Assurez-vous d'importer les bonnes fonctions du controller
+import express from 'express';
 
 const router = express.Router();
 
-// Route pour obtenir la liste de tous les utilisateurs
-router.get("/", getAllUsers);
 
-// Route pour créer un nouvel utilisateur
-router.post(
-  "/",
-  body("email").isEmail(),
-  body("password").isLength({ min: 6 }),
-  addUser
-);
 
-// Route pour obtenir les détails d'un utilisateur par ID
-router.get("/:id", getUserById);
 
-// Route pour mettre à jour un utilisateur par ID
-router.put(
-  "/:id",
-  body("email").isEmail(),
-  body("password").isLength({ min: 6 }),
-  updateUserById
-);
 
-// Route pour supprimer un utilisateur par ID
-router.delete("/:id", deleteUserById);
+import { UtilisateurSignUp , login ,ProfilePicUpload ,DoctorSignUp, getAllUsers, ProfileEdit,   forgetPasssword, verifyOtp, resetPassword,sendOTP, DoctorInfos, getAllSpecialities } from '../controllers/user.js';
+ import { auth, authAdminSup ,authDoctor ,authUtilisateur  } from '../middelwares/auth.js'; 
 
-export default router;
+
+
+router
+  .route('/UtilisateurSignUp')
+  .post(UtilisateurSignUp);
+
+router
+  .route('/sendOTP')
+  .post(sendOTP)
+
+router
+  .route('/forgetPassword')
+  .post(forgetPasssword)
+
+  router
+  .route('/resetPassword')
+  .put(resetPassword)
+router
+  .route('/verifyOTP')
+  .post(verifyOtp)
+
+
+  router
+  .route('/DoctorSignup')
+  .post(DoctorSignUp);
+  router
+  .route('/DoctorInfos')
+  .patch(DoctorInfos);
+
+router
+  .route('/login')
+  .post(login);
+
+router
+  .route('/updatePicture')
+  .patch(auth,ProfilePicUpload);
+
+router
+  .route('/AllUsers')
+  .get(authAdminSup,getAllUsers)
+
+router
+  .route('/editProfile')
+  .patch(auth,ProfileEdit)
+
+  
+  
+
+
+ export default  router;

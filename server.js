@@ -2,12 +2,23 @@ import express from 'express';
 import mongoose from 'mongoose';
 import morgan from 'morgan';
 import cors from 'cors';
+import { notFoundError, errorHandler } from './middelwares/error-handler.js';
+
+
 import userRoutes from './routes/user.js';
-import { notFoundError, errorHandler } from './middlewares/error-handler.js';
-import authController from './controllers/authController.js';
+import categoryRoute from "./routes/categories.js";
+import txtCategoryRoute from "./routes/textCategorie.js";
+import textRoute from "./routes/text.js";
+import jeuRoutes from "./routes/jeu.js";
+import scoreRoute from "./routes/score.js";
+import productRoute from './routes/product.js'
+import articalsRoute from './routes/artical.js'
+import forumRoute from "./routes/forumRoute.js";
+import * as forumController from "./controllers/forumController.js";
+
 
 const app = express();
-const port = process.env.PORT || 9090;
+const port = process.env.PORT || 3000;
 const databaseName = 'dyslire';
 const db_url = process.env.DB_URL || `mongodb://127.0.0.1:27017/${databaseName}`;
 
@@ -31,8 +42,19 @@ app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/img', express.static('public/images'));
+
+
 app.use('/user', userRoutes);
-app.use('/auth', authController);
+app.use('/category', categoryRoute);
+app.use('/txtCategory', txtCategoryRoute);
+app.use('/text', textRoute)
+app.use('/score', scoreRoute);
+app.use('/api/jeu', jeuRoutes);
+app.use('/score', scoreRoute);
+app.use("/", productRoute);
+app.use("/", articalsRoute);
+app.use('/forums', forumRoute);
+
 app.use(notFoundError);
 app.use(errorHandler);
 
