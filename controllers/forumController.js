@@ -5,12 +5,18 @@ import{validationResult} from "express-validator";
 // Fonction pour récupérer tous les forums
 export const getAllForums = async (req, res) => {
   try {
-    const forums = await Forum.find();
-    res.status(200).json(forums);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+    let docs = await Forum.find({});
+    let list = docs.map(doc => ({
+      id: doc._id,
+      title: doc.title,
+      description: doc.description,
+      image: doc.image
+    }));
+    res.status(200).json(list);
+  } catch (err) {
+    res.status(500).json({ error: err });
   }
-};
+}
 
 // Fonction pour créer un nouveau forum
 export const addOnce = async (req, res) => {

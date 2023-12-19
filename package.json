@@ -18,7 +18,7 @@
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "express-validator": "^7.0.1",
-    "google-tts-api": "^0.0.6",
+    "google-tts-api": "^2.0.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.0.1",
     "morgan": "^1.10.0",
@@ -30,6 +30,7 @@
     "path": "^0.12.7",
     "request": "^2.88.2",
     "speakeasy": "^2.0.0",
+    "stream": "^0.0.2",
     "twilio": "^3.40.0"
   },
   "devDependencies": {

@@ -106,7 +106,47 @@ class textController {
             res.status(500).json({ message: error.message });
         }
     }
+
+    async enregistrerConsultation(req, res) {
+        const { texteId } = req.body;
     
+        try {
+            const texte = await Texte.findById(texteId);
+            if (!texte) {
+                return res.status(404).json({ message: 'Texte non trouvé.' });
+            }
+    
+            // Incrémenter un compteur général de consultations
+            texte.consultationsCount = (texte.consultationsCount || 0) + 1;
+    
+            await texte.save();
+            res.status(200).json({ message: 'Consultation enregistrée.' });
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    }
+    
+
+    async obtenirStatistiques(req, res) {
+        const { texteId } = req.params;
+
+    try {
+      const texte = await Texte.findById(texteId).populate('consultations.userId', 'nom');
+      if (!texte) {
+        return res.status(404).json({ message: 'Texte non trouvé.' });
+      }
+
+      const statistiques = texte.consultations.map(c => ({
+        utilisateur: c.userId.nom, // ou tout autre champ pertinent de l'utilisateur
+        consultations: c.count
+      }));
+
+      res.status(200).json(statistiques);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  }
 }
+    
 
 export default textController;

@@ -10,8 +10,9 @@ const texteSchema = new Schema({
         ref: 'TextCategory' 
     },
     police: String, 
-    taille: Number  
+    taille: Number,// Nouveau champ pour compter les consultations
 });
+
 
 const Texte = model('Texte', texteSchema);
 

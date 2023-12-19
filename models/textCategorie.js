@@ -10,6 +10,7 @@ const textCategorySchema = new Schema (
             unique: true,
             maxlength: 50
         },
+        consultationsCount: { type: Number, default: 0 },
     },
     {
         timestamps: true,

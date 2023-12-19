@@ -1,5 +1,7 @@
 import Category from "../models/categories.js";
 import { validationResult } from "express-validator";
+import fs from 'fs';
+import path from 'path';
 
 
 export async function getAll(req, res) {
@@ -35,9 +37,15 @@ export async function addOnce(req, res) {
       return res.status(400).json({ error: validationResult(req).array() });
     }
 
+    // Supposons que l'image est envoyée sous forme de chaîne base64 dans req.body.imageBase64
+    const imageBase64 = req.body.imageBase64;
+    const buffer = Buffer.from(imageBase64, 'base64');
+    const imagePath = `img_${Date.now()}.jpg`; // Générer un nom de fichier
+    fs.writeFileSync(path.join('public/images', imagePath), buffer);
+
     let newCategory = await Category.create({
       title: req.body.title,
-      image: `${req.protocol}://${req.get("host")}/img/${req.file.filename}`,
+      image: `${req.protocol}://${req.get("host")}/img/${imagePath}`,
     });
 
     res.status(200).json({
@@ -52,12 +60,20 @@ export async function addOnce(req, res) {
 
 export async function putOnce(req, res) {
   try {
-    let newCategory = req.file ? {
-      title: req.body.title,
-      image: `${req.protocol}://${req.get("host")}/img/${req.file.filename}`
-    } : {};
+    // Créer un objet pour la mise à jour
+    let updateData = {
+      title: req.body.title
+    };
 
-    await Category.findByIdAndUpdate(req.params.id, newCategory);
+    // Ajouter l'image au besoin
+    if (req.file) {
+      updateData.image = `${req.protocol}://${req.get("host")}/img/${req.file.filename}`;
+    }
+
+    // Mettre à jour la catégorie
+    await Category.findByIdAndUpdate(req.params.id, updateData, { new: true });
+
+    // Récupérer la catégorie mise à jour
     let updatedCategory = await Category.findById(req.params.id);
 
     res.status(200).json(updatedCategory);
@@ -65,6 +81,7 @@ export async function putOnce(req, res) {
     res.status(500).json({ error: err });
   }
 }
+
 
 export async function deleteCategory(req, res) {
   try {
