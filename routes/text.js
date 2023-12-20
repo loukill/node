@@ -10,22 +10,24 @@ const textController = new TextController();
 
 
 router.post('/', textController.creerTexte.bind(textController));
-router.get('/parCategorie/:id', textController.lireTexte.bind(textController));
-router.get('/byCategory/:categoryId', textController.getTextByCategoryId.bind(textController));
+router.get('/lireTexte/:id', textController.lireTexte.bind(textController));
+router.get('/:id', textController.getTextById.bind(textController));
+router.get('/', textController.getAll.bind(textController))
 router.put('/:id', textController.mettreAJourTexte.bind(textController));
 router.delete('/:id', textController.supprimerTexte.bind(textController));
 router.get('/:texteId/statistiques', textController.obtenirStatistiques);
-router.get('/synthese/parCategorie/:id', async (req, res) => {
+router.post('/:textId/consulter', textController.enregistrerConsultation.bind(textController))
+router.get('/synthese/parTexte/:id', async (req, res) => {
     try {
-        console.log("Fetching Texte for Category ID:", req.params.id);
-        const texte = await Texte.findOne({ txtCategoryId: req.params.id });
+        console.log("Fetching Texte for Text ID:", req.params.id);
+        const texte = await Texte.findById(req.params.id);
 
         if (!texte) {
-            console.log("Texte not found for Category ID:", req.params.id);
-            return res.status(404).json({ erreur: "Texte introuvable pour cette catégorie." });
+            console.log("Texte not found for Text ID:", req.params.id);
+            return res.status(404).json({ erreur: "Texte introuvable pour cet ID." });
         }
 
-        const maxChar = 200; // Adjust the max character length per TTS request
+        const maxChar = 200; // Ajustez la longueur maximale de caractères par requête TTS
         const textChunks = splitIntoChunks(texte.contenu, maxChar);
         let urls = [];
 

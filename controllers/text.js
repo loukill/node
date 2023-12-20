@@ -1,5 +1,4 @@
 import Texte from "../models/text.js"
-import textCategorie from "../models/textCategorie.js"
 import mongoose from 'mongoose';
 
 class textController {
@@ -7,21 +6,13 @@ class textController {
 
     async creerTexte(req, res) {
         try {
-            const { contenu, txtCategoryId, police, taille } = req.body;
+            const { contenu, title } = req.body;
     
-            // Vérifiez si l'ID de la catégorie de texte est fourni et est valide
-            if (!txtCategoryId || !mongoose.Types.ObjectId.isValid(txtCategoryId)) {
-                return res.status(400).json({ erreur: "ID de catégorie de texte invalide ou manquant." });
-            }
-    
-            // Vérifiez si la catégorie de texte existe
-            const categoryExists = await textCategorie.findById(txtCategoryId);
-            if (!categoryExists) {
-                return res.status(404).json({ erreur: "Catégorie de texte introuvable." });
-            }
-    
-            const nouveauTexte = new Texte({ contenu, txtCategoryId, police, taille  });
+            // Création d'une nouvelle instance de Texte
+            const nouveauTexte = new Texte({ contenu, title });
             const texteEnregistre = await nouveauTexte.save();
+    
+            // Renvoi du texte enregistré en réponse
             res.status(201).json(texteEnregistre);
         } catch (erreur) {
             res.status(400).json({ erreur: erreur.message });
@@ -32,14 +23,14 @@ class textController {
 
     async lireTexte(req, res) {
         try {
-            const categoryId = req.params.id;
-            if (!mongoose.Types.ObjectId.isValid(categoryId)) {
-                return res.status(400).json({ erreur: "ID de catégorie invalide." });
+            const texteId = req.params.id; // Utiliser l'ID du texte directement
+            if (!mongoose.Types.ObjectId.isValid(texteId)) {
+                return res.status(400).json({ erreur: "ID de texte invalide." });
             }
     
-            const texte = await Texte.findOne({ txtCategoryId: categoryId });
+            const texte = await Texte.findById(texteId);
             if (!texte) {
-                return res.status(404).json({ erreur: "Texte introuvable pour cette catégorie." });
+                return res.status(404).json({ erreur: "Texte introuvable." });
             }
             res.json(texte);
         } catch (erreur) {
@@ -47,23 +38,30 @@ class textController {
         }
     }
     
+    
 
     async mettreAJourTexte(req, res) {
         try {
-            const { contenu } = req.body;
-            const texteMaj = await Texte.findByIdAndUpdate(
-                req.params.id,
-                { contenu, police, taille },
-                { new: true }
-            );
+            const texteId = req.params.id;
+            const { title, contenu, police, taille } = req.body;
+    
+            if (!mongoose.Types.ObjectId.isValid(texteId)) {
+                return res.status(400).json({ erreur: "ID de texte invalide." });
+            }
+    
+            const miseAJour = { title, contenu, police, taille };
+            const texteMaj = await Texte.findByIdAndUpdate(texteId, miseAJour, { new: true });
+    
             if (!texteMaj) {
                 return res.status(404).json({ erreur: "Texte introuvable." });
             }
+    
             res.json(texteMaj);
         } catch (erreur) {
             res.status(500).json({ erreur: erreur.message });
         }
     }
+    
 
     async supprimerTexte(req, res) {
         try {
@@ -92,26 +90,41 @@ class textController {
         }
     }
 
-    async getTextByCategoryId(req, res) {
+    async getTextById(req, res) {
         try {
-            const categoryId = req.params.categoryId;
-            const text = await Texte.findOne({ txtCategoryId: categoryId });
-            
-            if (!text) {
-                return res.status(404).json({ message: "Text not found for this category." });
+            const texteId = req.params.id; // Utiliser l'ID du texte directement
+            if (!mongoose.Types.ObjectId.isValid(texteId)) {
+                return res.status(400).json({ message: "ID de texte invalide." });
             }
     
-            res.status(200).json(text);
+            const texte = await Texte.findById(texteId);
+            if (!texte) {
+                return res.status(404).json({ message: "Texte introuvable." });
+            }
+    
+            res.status(200).json(texte);
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
     }
 
+    async getAll(req, res) {
+        try {
+            const textes = await Texte.find({}); // Récupère tous les textes
+            res.status(200).json(textes);
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    }
+    
+    
+
     async enregistrerConsultation(req, res) {
-        const { texteId } = req.body;
+        const texteId = req.params.textId;
     
         try {
-            const texte = await Texte.findById(texteId);
+            // Utilisez { _id: texteId } pour spécifier le critère de recherche
+            const texte = await Texte.findOne({ _id: texteId });
             if (!texte) {
                 return res.status(404).json({ message: 'Texte non trouvé.' });
             }
