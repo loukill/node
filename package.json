@@ -29,6 +29,7 @@
     "otp-generator": "^4.0.1",
     "path": "^0.12.7",
     "request": "^2.88.2",
+    "socket.io": "^4.7.2",
     "speakeasy": "^2.0.0",
     "stream": "^0.0.2",
     "twilio": "^3.40.0"

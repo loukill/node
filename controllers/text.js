@@ -1,4 +1,5 @@
 import Texte from "../models/text.js"
+import { io } from "../server.js";
 import mongoose from 'mongoose';
 
 class textController {
@@ -6,18 +7,16 @@ class textController {
 
     async creerTexte(req, res) {
         try {
-            const { contenu, title } = req.body;
-    
-            // Création d'une nouvelle instance de Texte
-            const nouveauTexte = new Texte({ contenu, title });
+            const {title , contenu } = req.body;
+            const nouveauTexte = new Texte({ title, contenu });
             const texteEnregistre = await nouveauTexte.save();
-    
-            // Renvoi du texte enregistré en réponse
+        
+            io.emit('texteCree', texteEnregistre);
             res.status(201).json(texteEnregistre);
-        } catch (erreur) {
-            res.status(400).json({ erreur: erreur.message });
-        }
-    }
+          } catch (erreur) {
+            res.status(500).json({ erreur: erreur.message });
+          }
+        };
     
     
 
