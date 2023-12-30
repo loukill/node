@@ -8,7 +8,7 @@ const texteSchema = new Schema({
         required: true,
         unique: true,
         maxlength: 50
-    },
+    },  
     contenu: String,
     dateCreation: { type: Date, default: Date.now },
     police: String,

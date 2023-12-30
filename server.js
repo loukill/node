@@ -17,6 +17,8 @@ import productRoute from './routes/product.js'
 import articalsRoute from './routes/artical.js'
 import forumRoute from "./routes/forumRoute.js";
 import * as forumController from "./controllers/forumController.js";
+import ticTacRoute from "./routes/scoreTicTac.js";
+import matchScore from "./routes/matchingScore.js";
 
 
 const app = express();
@@ -64,9 +66,11 @@ app.use('/text', textRoute)
 app.use('/score', scoreRoute);
 app.use('/api/jeu', jeuRoutes);
 app.use('/score', scoreRoute);
+app.use('/matchScore', matchScore)
 app.use("/", productRoute);
 app.use("/", articalsRoute);
 app.use('/forums', forumRoute);
+app.use('/ticTac', ticTacRoute)
 
 app.use(notFoundError);
 app.use(errorHandler);
