@@ -10,9 +10,9 @@ export async function addOneProduct(req, res) {
     
     newProduct.name= req.body.name;
     newProduct.description = req.body.description;
-    newProduct.prix = req.body.prix;
-    newProduct.image = `${req.protocol}://${req.get("host")}/image/${req.file.filename}`;
-    newProduct.availability = req.body.availability;
+    newProduct.price = req.body.prix;
+    newProduct.quantity = `${req.protocol}://${req.get("host")}/image/${req.file.filename}`;
+    newProduct.category = req.body.availability;
   
     newProduct.save();
     
@@ -44,7 +44,7 @@ export async function addOneProduct(req, res) {
   }
 
 
-  export async function deleteProductByID(req, res, next) {
+  /* export async function deleteProductByID(req, res, next) {
     try {
       //const restaurantId = req.params.restaurentId;
       //const menuId = req.params.menuId;
@@ -72,6 +72,7 @@ export async function addOneProduct(req, res) {
       return res.status(500).json({ error: error.message });
     }
   }
+*/
 
 
 
@@ -90,4 +91,3 @@ export async function addOneProduct(req, res) {
       res.status(400).json({ error: error.message });
     }
   };
-

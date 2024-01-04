@@ -9,6 +9,10 @@ const userSchema = new mongoose.Schema({
     location: { type: String, required: false },
     resetCode: { type: String, required: false },
     picture: { type: String, required : false },
+    isBanned: {
+      type: Boolean,
+      default: false,
+    },
     role: { type: String, enum: ['Doctor', 'Utilisateur', 'AdminSup'], required: true },   
   });
 

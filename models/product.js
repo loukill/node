@@ -11,15 +11,15 @@ const ProductSchema = new Schema({
         type: String,
         required:true
     },
-    prix: {
+    price: {
         type: Number,
         required:true
     },
-    availability:{
-        type: Boolean,
+    quantity:{
+        type: Number,
         required:true
     },
-    image: {
+    category: {
         type:String,
         required:true
     },

@@ -6,7 +6,7 @@ const router = express.Router();
 
 
 
-import { UtilisateurSignUp , login ,ProfilePicUpload ,DoctorSignUp, getAllUsers, ProfileEdit,   forgetPasssword, verifyOtp, resetPassword,sendOTP, DoctorInfos, getAllSpecialities } from '../controllers/user.js';
+import { UtilisateurSignUp , login ,ProfilePicUpload ,DoctorSignUp, getAllUsers, ProfileEdit,   forgetPasssword, verifyOtp, resetPassword,sendOTP, DoctorInfos, getAllSpecialities,banUser,unbanUser } from '../controllers/user.js';
  import { auth, authAdminSup ,authDoctor ,authUtilisateur  } from '../middelwares/auth.js'; 
 
 
@@ -30,7 +30,6 @@ router
   .route('/verifyOTP')
   .post(verifyOtp)
 
-
   router
   .route('/DoctorSignup')
   .post(DoctorSignUp);
@@ -48,14 +47,16 @@ router
 
 router
   .route('/AllUsers')
-  .get(authAdminSup,getAllUsers)
+  .get(getAllUsers)
 
 router
   .route('/editProfile')
   .patch(auth,ProfileEdit)
 
-  
-  
+  router.put('/:id/unban', unbanUser);
+
+// Ban user route
+router.put('/:id/ban', banUser);
 
 
  export default  router;
